@@ -1,28 +1,92 @@
-<script setup lang="ts">
-import { useRouter } from "vue-router"
+<script >
+import { RouterLink } from 'vue-router';
 
-  defineProps<{
-    title: string
-  }>()
+export default {
+  name: "LoginForm",
+  data() {
+    return {
+      email: null,
+      password: null
+    }
+  },
+  methods: {
+    async postLogin() {
+      var emailBase64 = btoa(email.value);
+      var passwordMd5Base64 = btoa(CryptoJS.MD5(password.value));
 
-  const goHome = () => {
-    console.log('Teste')
+      let options = {
+        method: 'POST',
+        headers: {
+          'Content-Type': 
+          'application/json;charset=utf-8'
+        },
+        body: JSON.stringify({
+          Username: emailBase64,
+          UserPassword: passwordMd5Base64
+        })
+      }
+      
+      const req = await fetch('http://186.237.58.167:65129/api/user/login', options)
+      console.log(req)
+      if (req.status === 200) {
+
+        const reader = req.body.getReader();
+        const stream = new ReadableStream({
+          start(controller) {
+            return pump();
+
+            function pump() {
+              return reader.read().then(({ done, value }) => {
+                // When no more data needs to be consumed, close the stream
+                if (done) {
+                  controller.close();
+                  return;
+                }
+
+                // Enqueue the next data chunk into our target stream
+                controller.enqueue(value);
+                return pump();
+              });
+            }
+          }
+        });
+        const blob = await new Response(stream).blob();
+        const text = await blob.text();
+        const token = text.slice(1, -1);
+
+        localStorage.setItem("authorization", token);
+        this.$router.push('/home');
+      } else {
+        alert('Login incorreto!')
+      }
+    }
   }
+}
 </script>
 
 <template>
   <form class="p-4 w-100">
-    <h2>{{ title }}</h2>
+    <h2>Login</h2>
     <div class="form-group mb-4">
-      <label class="text-dark">Insira seu E-mail</label>
-      <input type="email" class="form-control" placeholder="E-mail">
+      <label class="text-white">Insira seu E-mail</label>
+      <input id="email"
+        class="form-control"
+        type="text"
+        name="email"
+        v-model="email"
+        placeholder="Email"/>
     </div>
     <div class="form-group mb-4">
-      <label class="text-dark">Insira sua senha</label>
-      <input type="password" class="form-control" placeholder="Password">
+      <label class="text-white">Insira sua senha</label>
+      <input id="password"
+        class="form-control"
+        type="password"
+        name="password"
+        v-model="password"
+        placeholder="Password"/>
       <small class="form-text text-muted">Nunca compartilhe sua senha com terceiros!</small>
     </div>
-    <RouterLink to="/home" class="btn btn-success">Entrar</RouterLink>
+    <button type="button" class="btn btn-success" @click="postLogin">Entrar</button>
   </form>
 </template>
 
