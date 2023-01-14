@@ -5,6 +5,7 @@ import ToolingIcon from './icons/IconTooling.vue'
 import EcosystemIcon from './icons/IconEcosystem.vue'
 import CommunityIcon from './icons/IconCommunity.vue'
 import SupportIcon from './icons/IconSupport.vue'
+import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
@@ -16,7 +17,7 @@ import SupportIcon from './icons/IconSupport.vue'
       <h1 class="text-white text-center title">Gest</h1>
 
       <div class="p-2">
-        <LoginTemplate title="Login" />
+        <RouterView />
       </div>
 
     </div>
@@ -29,7 +30,6 @@ import SupportIcon from './icons/IconSupport.vue'
 
 .logo {
   display: block;
-  /* margin: 0 auto 2rem; */
   margin: 0;
   padding: 0;
 }
@@ -43,7 +43,7 @@ import SupportIcon from './icons/IconSupport.vue'
 .bg--img {
   width: 100%;
   height: 100%;
-  background-image: url('../../../assets/images/exemplo_01.png');
+  background-image: url('../assets/fundo.jpg');
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;

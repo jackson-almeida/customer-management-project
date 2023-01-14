@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import { useRouter } from "vue-router"
+
   defineProps<{
     title: string
   }>()
+
+  const goHome = () => {
+    console.log('Teste')
+  }
 </script>
 
 <template>
@@ -16,9 +22,7 @@
       <input type="password" class="form-control" placeholder="Password">
       <small class="form-text text-muted">Nunca compartilhe sua senha com terceiros!</small>
     </div>
-    <button type="submit" class="btn btn-success w-100">
-      <RouterLink to="/about">Entrar</RouterLink>
-    </button>
+    <RouterLink to="/home" class="btn btn-success">Entrar</RouterLink>
   </form>
 </template>
 
