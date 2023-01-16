@@ -9,6 +9,21 @@ import { RouterLink } from 'vue-router';
       }
     },
     methods: {
+      async getproductionunitlist() {
+        let options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 
+            'application/json;charset=utf-8'
+          },
+          body: JSON.stringify({
+            
+          })
+        }
+        const req = await fetch('http://186.237.58.167:65129/api/user/getproductionunitlist', options)
+        console.log(req);
+      },
+      
       signout() {
         this.$router.push('/auth/login');
       }
@@ -119,7 +134,8 @@ import { RouterLink } from 'vue-router';
             <td>Otto</td>
             <td>@mdo</td>
             <td>
-              <button class="btn">Editar</button>
+              <button class="btn btn-success m-1">Editar</button>
+              <button class="btn btn-warning m-1">Remover</button>
             </td>
           </tr>
         </tbody>
@@ -129,6 +145,18 @@ import { RouterLink } from 'vue-router';
 </template>
 
 <style>
+  body {
+    background: rgb(41, 151, 241);
+  }
+
+  .content-area {
+    background: rgb(236, 236, 236);
+    padding: 2rem;
+    margin-top: 2rem;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+
   .input-time-value,
   .negative-button,
   .positive-button {
@@ -146,7 +174,8 @@ import { RouterLink } from 'vue-router';
   }
 
   .second-content-area {
-    background: rgb(21, 123, 207);
+    /* background: rgb(21, 123, 207); */
+    background: rgb(223, 223, 223);
   }
 
   .table-area {
