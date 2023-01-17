@@ -29,7 +29,6 @@ export default {
       const req = await fetch('http://186.237.58.167:65129/api/user/login', options)
       // console.log(req)
       if (req.status === 200) {
-
         const reader = req.body.getReader();
         const stream = new ReadableStream({
           start(controller) {
@@ -54,7 +53,8 @@ export default {
         const text = await blob.text();
         const token = text.slice(1, -1);
 
-        localStorage.setItem("authorization", token);
+        localStorage.removeItem('authorization')
+        localStorage.setItem('authorization', token);
         this.$router.push('/home');
       } else {
         alert('Login incorreto!')
