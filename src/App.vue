@@ -1,36 +1,9 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import LoginTemplate from './components/LoginTemplate.vue'
 </script>
 
 <template>
-  <!-- <header> -->
-    <!-- <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" /> -->
-    <!-- <h1>CM Ware</h1> -->
-    <!-- <div class="wrapper"> -->
-
-      <!-- <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav> -->
-    <!-- </div> -->
-  <!-- </header> -->
-
-
   <RouterView />
-  <!-- <div class="container-fluid">
-  <div class="row content--main">
-    <div class="content-img col col-xs-0 bg--img"></div>
-    <div class="col-xxl-4 col-xl-5 col-lg-6 col-md-6 col-xs-12 bg-dark d-grid align-content-center">
-      <h1 class="text-white text-center title">Gest</h1>
-
-      <div class="p-2">
-      <LoginTemplate title="Login" />
-      </div>
-
-    </div>
-  </div>
-</div> -->
 </template>
 
 <style scoped>

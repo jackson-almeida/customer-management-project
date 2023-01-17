@@ -6,8 +6,6 @@ import { getClientById } from '../services/getClientById';
 import { getProductionUnitList } from '../services/getProductionUnitList'
 
 export default {
-  name: "",
-  timeValue: 0,
   data() {
     return {
       name: null,
@@ -123,7 +121,7 @@ export default {
             <div class="form-group">
               <label for="password">Senha</label>
               <input id="password"
-                type="text"
+                type="password"
                 class="form-control"
                 v-model="form.UserPassword">
             </div>
@@ -132,7 +130,7 @@ export default {
             <div class="form-group">
               <label for="confirmPassword">Confirmar senha</label>
               <input id="confirmPassword"
-                type="text"
+                type="password"
                 class="form-control"
                 v-model="confirmPassword">
             </div>
