@@ -2,48 +2,10 @@
 import { RouterLink } from 'vue-router';
 import { getClients } from '../services/getClients';
 import { postNewClient } from '../services/postNewClient';
-
-async function getClientById(id) {
-  const _token = localStorage.getItem('authorization');
-  let options = {
-    method: 'GET',
-    headers: {
-      'Content-Type' : 'application/json;charset=utf-8',
-      'Authorization': 'Bearer ' + _token
-    },
-  }
-
-  const req = await fetch('http://186.237.58.167:65129/api/user/getuserbyid/G/' + id, options)
-
-  if (req.status === 200) {
-    const reader = req.body.getReader();
-    const stream = new ReadableStream({
-      start(controller) {
-        return pump();
-
-        function pump() {
-          return reader.read().then(({ done, value }) => {
-            if (done) {
-              controller.close();
-              return;
-            }
-
-            controller.enqueue(value);
-            return pump();
-          });
-        }
-      }
-    });
-    const blob = await new Response(stream).blob();
-    const text = await blob.text();
-    return JSON.parse(text);
-  } else {
-    alert('Falha na requisição!')
-  }
-}
+import { getClientById } from '../services/getClientById';
+import { getProductionUnitList } from '../services/getProductionUnitList'
 
 export default {
-  API: 'http://186.237.58.167:65129',
   name: "",
   timeValue: 0,
   data() {
@@ -69,47 +31,12 @@ export default {
     }
   },
   mounted() {
-    this.getproductionunitlist();
+    this.getProductions();
     this.getClients();
   },
   methods: {
-    async getproductionunitlist() {
-      const _token = localStorage.getItem('authorization');
-      let options = {
-        method: 'GET',
-        headers: {
-          'Content-Type' : 'application/json;charset=utf-8',
-          'Authorization': 'Bearer ' + _token
-        },
-      }
-
-      const req = await fetch('http://186.237.58.167:65129/api/user/getproductionunitlist', options)
-
-      if (req.status === 200) {
-        const reader = req.body.getReader();
-        const stream = new ReadableStream({
-          start(controller) {
-            return pump();
-
-            function pump() {
-              return reader.read().then(({ done, value }) => {
-                if (done) {
-                  controller.close();
-                  return;
-                }
-
-                controller.enqueue(value);
-                return pump();
-              });
-            }
-          }
-        });
-        const blob = await new Response(stream).blob();
-        const text = await blob.text();
-        this.listProduct = JSON.parse(text).productionUnitList
-      } else {
-        alert('Falha na requisição!')
-      }
+    async getProductions() {
+      this.listProduct = await getProductionUnitList();
     },
     async getClients() {
       this.listClients = await getClients();
@@ -130,14 +57,11 @@ export default {
       this.form.loginExpiration += 1;
     },
     async postNewClient() {
-
       if (this.form.UserPassword !== this.confirmPassword) {
         return alert('Senhas não conferem');
       } else {
         this.listClients = await postNewClient(this.form);
       }
-
- 
     },
     async editClient(clientId) {
       const client = await getClientById(clientId);
@@ -170,7 +94,6 @@ export default {
           <div class="col">
             <label for="unidade">Unidade</label>
             <select id="unidade" class="form-control" v-model="form.unitId">
-              <option selected>Escolher</option>
               <option v-for="item in listProduct" :value="item.id">{{item.name}}</option>
             </select>
           </div>

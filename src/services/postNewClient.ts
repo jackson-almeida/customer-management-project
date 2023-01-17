@@ -3,12 +3,6 @@ import { getClients } from './getClients';
 export async function postNewClient(form) {
     const _token = localStorage.getItem('authorization');
 
-    // if (form.UserPassword !== this.confirmPassword) {
-    //   return alert('Senhas não conferem');
-    // }
-
-    console.log(form)
-
     var passwordMd5Base64 = btoa(CryptoJS.MD5(form.UserPassword));
     let options = {
       method: 'POST',
