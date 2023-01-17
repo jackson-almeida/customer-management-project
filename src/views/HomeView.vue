@@ -1,5 +1,6 @@
 <script>
 import { RouterLink } from 'vue-router';
+// import { toRaw } from 'vue';
 
 async function getClientById(id) {
   const _token = localStorage.getItem('authorization');
@@ -51,7 +52,7 @@ export default {
       listClients: [],
       confirmPassword: null,
       form: {
-        id: null,
+        id: 0,
         userName: null,
         name: null,
         UserPassword: null,
@@ -161,6 +162,27 @@ export default {
     },
     tokenTimeIncrement() {
       this.form.loginExpiration += 1;
+    },
+    async postNewClient() {
+      const _token = localStorage.getItem('authorization');
+      let options = {
+        method: 'POST',
+        headers: {
+          'Content-Type' : 'application/json;charset=utf-8',
+          'Authorization': 'Bearer ' + _token
+        },
+        body: JSON.stringify({
+          ...this.form
+        })
+      }
+
+      const req = await fetch('http://186.237.58.167:65129/api/user/saveuser', options)
+
+      if (req.status === 200) {
+        alert('Alterações salvas!');
+      } else {
+        alert('Falha na requisição!');
+      }
     },
     async editClient(clientId) {
       const client = await getClientById(clientId);
