@@ -1,4 +1,4 @@
-export async function getClientsTest() {
+export async function getClients() {
     const _token = localStorage.getItem('authorization');
     let options = {
       method: 'GET',
