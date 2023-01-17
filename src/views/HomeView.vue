@@ -1,6 +1,6 @@
 <script>
 import { RouterLink } from 'vue-router';
-// import { toRaw } from 'vue';
+import { getClientsTest } from '../services/getClients';
 
 async function getClientById(id) {
   const _token = localStorage.getItem('authorization');
@@ -41,6 +41,47 @@ async function getClientById(id) {
   }
 }
 
+async function getClientws() {
+  const _token = localStorage.getItem('authorization');
+  let options = {
+    method: 'GET',
+    headers: {
+      'Content-Type' : 'application/json;charset=utf-8',
+      'Authorization': 'Bearer ' + _token
+    },
+  }
+
+  const req = await fetch('http://186.237.58.167:65129/api/user/getusers', options)
+
+  if (req.status === 200) {
+    const reader = req.body.getReader();
+    const stream = new ReadableStream({
+      start(controller) {
+        return pump();
+
+        function pump() {
+          return reader.read().then(({ done, value }) => {
+            if (done) {
+              controller.close();
+              return;
+            }
+
+            controller.enqueue(value);
+            return pump();
+          });
+        }
+      }
+    });
+    const blob = await new Response(stream).blob();
+    const text = await blob.text();
+    // this.listClients = JSON.parse(text);
+
+    return JSON.parse(text);
+  } else {
+    alert('Falha na requisição!')
+  }
+}
+
 export default {
   API: 'http://186.237.58.167:65129',
   name: "",
@@ -70,6 +111,7 @@ export default {
   mounted() {
     this.getproductionunitlist();
     this.getClients();
+    // this.listClients = JSON.parse(text);
   },
   methods: {
     async getproductionunitlist() {
@@ -111,42 +153,7 @@ export default {
       }
     },
     async getClients() {
-      const _token = localStorage.getItem('authorization');
-      let options = {
-        method: 'GET',
-        headers: {
-          'Content-Type' : 'application/json;charset=utf-8',
-          'Authorization': 'Bearer ' + _token
-        },
-      }
-
-      const req = await fetch('http://186.237.58.167:65129/api/user/getusers', options)
-
-      if (req.status === 200) {
-        const reader = req.body.getReader();
-        const stream = new ReadableStream({
-          start(controller) {
-            return pump();
-
-            function pump() {
-              return reader.read().then(({ done, value }) => {
-                if (done) {
-                  controller.close();
-                  return;
-                }
-
-                controller.enqueue(value);
-                return pump();
-              });
-            }
-          }
-        });
-        const blob = await new Response(stream).blob();
-        const text = await blob.text();
-        this.listClients = JSON.parse(text);
-      } else {
-        alert('Falha na requisição!')
-      }
+      this.listClients = await getClientsTest();
     },
     getClientById,
     signout() {
@@ -165,6 +172,12 @@ export default {
     },
     async postNewClient() {
       const _token = localStorage.getItem('authorization');
+
+      if (this.form.UserPassword !== this.confirmPassword) {
+        return alert('Senhas não conferem');
+      }
+
+      var passwordMd5Base64 = btoa(CryptoJS.MD5(this.form.UserPassword));
       let options = {
         method: 'POST',
         headers: {
@@ -172,13 +185,15 @@ export default {
           'Authorization': 'Bearer ' + _token
         },
         body: JSON.stringify({
-          ...this.form
+          ...this.form,
+          UserPassword: passwordMd5Base64,
         })
       }
 
       const req = await fetch('http://186.237.58.167:65129/api/user/saveuser', options)
 
       if (req.status === 200) {
+        this.listClients = await getClientsTest();
         alert('Alterações salvas!');
       } else {
         alert('Falha na requisição!');

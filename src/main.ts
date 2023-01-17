@@ -5,7 +5,9 @@ import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.js'
 
 import App from './App.vue'
 import router from './router'
-// import bootstrap from './bootstrap.js'
+
+// import router from './router/auth'
+
 
 import './assets/main.css'
 
