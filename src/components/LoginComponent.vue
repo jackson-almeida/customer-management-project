@@ -1,5 +1,6 @@
 <script >
 import { RouterLink } from 'vue-router';
+import { readableStream } from '../services/readableStream';
 
 export default {
   name: "LoginForm",
@@ -27,31 +28,9 @@ export default {
       }
       
       const req = await fetch('http://186.237.58.167:65129/api/user/login', options)
-      // console.log(req)
       if (req.status === 200) {
-        const reader = req.body.getReader();
-        const stream = new ReadableStream({
-          start(controller) {
-            return pump();
-
-            function pump() {
-              return reader.read().then(({ done, value }) => {
-                // When no more data needs to be consumed, close the stream
-                if (done) {
-                  controller.close();
-                  return;
-                }
-
-                // Enqueue the next data chunk into our target stream
-                controller.enqueue(value);
-                return pump();
-              });
-            }
-          }
-        });
-        const blob = await new Response(stream).blob();
-        const text = await blob.text();
-        const token = text.slice(1, -1);
+        const response = await readableStream(req);
+        const token = response.slice(1, -1);
 
         localStorage.removeItem('authorization')
         localStorage.setItem('authorization', token);
